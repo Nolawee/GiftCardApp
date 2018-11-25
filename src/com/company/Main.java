@@ -8,7 +8,7 @@ import java.util.*;
 
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException{
         // Check amount of arguments are correct
         if (args.length != 2) {
             return;
@@ -22,10 +22,23 @@ public class Main {
 
         var giftCardBalance = Integer.parseInt(args[1]);
 
+        var store = MakeStore(fileName);
+
+        var prices = store.values();
+
+        // add the two smallest values and if thats greater than the giftcard ballance then exit out of the progarm
+        if (AbleToBuyTwoItems(giftCardBalance, prices)) {
+            System.out.println("Need a bigger gift card balance");
+            return;
+        }
+
+
+
+
 
     }
 
-    public static boolean isInteger(String s) {
+    public static boolean isInteger(String s) throws NullPointerException {
         try {
             Integer.parseInt(s);
         } catch (NumberFormatException e) {
@@ -37,7 +50,7 @@ public class Main {
         return true;
     }
 
-    public static HashMap<String, Integer> MakeStore(String fileName) throws IOException, FileNotFoundException {
+    public static HashMap<String, Integer> MakeStore(String fileName) throws IOException {
         try {
 
             BufferedReader reader = new BufferedReader(new FileReader(fileName));
@@ -57,4 +70,22 @@ public class Main {
             throw err;
         }
     }
+
+    public static boolean AbleToBuyTwoItems (int giftCardBalance, Collection storeValues) {
+
+        Object[] array = storeValues.toArray();
+
+        int[] ints = Arrays.stream(array).mapToInt(o -> (int)o).toArray();
+
+        Arrays.sort(ints);
+
+        var minimumBalanceToBuyTwoItems = ints[0] + ints[1];
+
+        if(giftCardBalance < minimumBalanceToBuyTwoItems) {
+            return false;
+        }
+
+        return true;
+    }
+
 }
